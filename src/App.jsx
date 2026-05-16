@@ -720,13 +720,26 @@ function SettingsPage({ tenant, setTenant, currentUser, setToast }) {
   const [form, setForm] = useState({ ...tenant });
   const [saving, setSaving] = useState(false);
 
-  async function handleSave() {
-    setSaving(true);
-    const { error } = await supabase.from("tenants").upsert({ id: currentUser.tenant_id, ...form });
-    if (error) { setToast({ msg:"Erro ao salvar: "+error.message, type:"error" }); }
-    else { setTenant(form); setToast({ msg:"Configurações salvas!" }); }
-    setSaving(false);
+ async function handleSave() {
+  setSaving(true);
+  const { error } = await supabase
+    .from("tenants")
+    .update({
+      name: form.name,
+      logo: form.logo,
+      color: form.color,
+      email: form.email,
+      wa_template: form.waTemplate,
+    })
+    .eq("id", currentUser.tenant_id);
+  if (error) {
+    setToast({ msg: "Erro ao salvar: " + error.message, type: "error" });
+  } else {
+    setTenant(form);
+    setToast({ msg: "Configurações salvas!" });
   }
+  setSaving(false);
+}
 
   return (
     <div>
