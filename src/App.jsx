@@ -996,7 +996,7 @@ export default function App() {
         const { data: userData } = await supabase.from("users").select("*").eq("id", session.user.id).single();
         if (userData) {
           const { data: tenantData } = await supabase.from("tenants").select("*").eq("id", userData.tenant_id).single();
-          setCurrentUser({ ...userData, email: session.user.email });
+          setCurrentUser({ ...userData, email: session.user.email, tenant_id: userData.tenant_id });
           setTenant(tenantData || {});
         }
       }
